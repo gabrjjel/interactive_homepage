@@ -3,13 +3,19 @@
 {
 	"name": "Ubuntu",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/base:noble"
+	"image": "mcr.microsoft.com/devcontainers/base:noble",
+
+	// Forward the local static server port for this project.
+	"forwardPorts": [8000],
+	"portsAttributes": {
+		"8000": {
+			"label": "Pixel Home",
+			"onAutoForward": "openBrowser"
+		}
+	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",

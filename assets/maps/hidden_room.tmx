@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="16" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="6">
- <tileset firstgid="1" source="gba_green2.tsx"/>
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="16" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="7">
+ <tileset firstgid="1" source="tilesheet.tsx"/>
  <layer id="1" name="Camada de Blocos 1" width="16" height="8">
   <data encoding="csv">
 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
@@ -37,10 +37,36 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,81
 </data>
  </layer>
+ <layer id="5" name="collisions" width="16" height="8" visible="0">
+  <data encoding="csv">
+1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,
+1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,
+0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,
+0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
  <objectgroup id="2" name="Camada de Objetos 1">
   <object id="1" gid="27" x="96.6667" y="48.8333" width="31.5" height="31.5"/>
   <object id="2" gid="28" x="128.167" y="48.8333" width="31.5" height="31.5"/>
   <object id="3" gid="88" x="137.667" y="62.3333" width="16" height="16"/>
   <object id="4" gid="162" x="105.667" y="64.6667" width="16" height="16"/>
+  <object id="5" name="Return" type="hotspot" x="240" y="128" width="16" height="16">
+   <properties>
+    <property name="interactionType" value="route"/>
+    <property name="tileX" value="15"/>
+    <property name="tileY" value="7"/>
+    <property name="route" value="?map=homepage"/>
+    <property name="prompt" value="Return"/>
+   </properties>
+  </object>
+  <object id="6" name="Hidden Room Spawn" type="spawn" x="224" y="112" width="16" height="16">
+   <properties>
+    <property name="direction" value="down"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

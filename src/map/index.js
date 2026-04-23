@@ -2,8 +2,27 @@ import { COLLISION_LAYER_NAME } from '../config.js';
 import { loadImage } from '../utils/index.js';
 import { normalizeObject, normalizeSpawn, parseInteger, parseLayers } from './parser.js';
 
+const MAP_FILES = {
+  homepage: 'homepage.tmx',
+  hidden_room: 'hidden_room.tmx',
+};
+
+export function isSupportedMapId(mapId) {
+  return typeof mapId === 'string' && Object.hasOwn(MAP_FILES, mapId);
+}
+
+export async function loadMap(mapId = 'homepage') {
+  const resolvedMapId = isSupportedMapId(mapId) ? mapId : 'homepage';
+  const mapUrl = new URL(`../../assets/maps/${MAP_FILES[resolvedMapId]}`, import.meta.url);
+
+  return loadMapFromUrl(mapUrl, resolvedMapId);
+}
+
 export async function loadHomepageMap() {
-  const mapUrl = new URL('../../assets/maps/homepage.tmx', import.meta.url);
+  return loadMap('homepage');
+}
+
+async function loadMapFromUrl(mapUrl, mapId) {
   const mapResponse = await fetch(mapUrl);
   if (!mapResponse.ok) {
     throw new Error(`Failed to load TMX map: ${mapResponse.status}`);
@@ -70,6 +89,7 @@ export async function loadHomepageMap() {
   const playerSpawn = spawnObject ? normalizeSpawn(spawnObject, width, height, tileWidth, tileHeight) : null;
 
   return {
+    id: mapId,
     width,
     height,
     tileWidth,

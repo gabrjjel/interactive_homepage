@@ -4,7 +4,7 @@ This document describes the current implementation of the project as it exists i
 
 ## Project Summary
 
-Pixel Home is a static browser project that turns a homepage into a small explorable pixel-art room. The site boots directly in the browser with ES modules, loads a Tiled-authored TMX map at runtime, renders layered tile data onto a canvas, and lets the player move around the map to trigger hotspot interactions.
+Pixel Home is a static browser project that turns a homepage into a small explorable pixel-art room. The site boots directly in the browser with ES modules, loads Tiled-authored TMX maps at runtime, renders layered tile data onto a canvas, and lets the player move around the map to trigger hotspot interactions.
 
 The current implementation is intentionally lightweight:
 
@@ -97,6 +97,7 @@ http://127.0.0.1:8000
 The app fetches these files at runtime:
 
 - `assets/maps/homepage.tmx`
+- `assets/maps/hidden_room.tmx`
 - `assets/maps/tilesheet.tsx`
 - `assets/tilesheet.png`
 - `assets/player/spritesheet.png`
@@ -109,8 +110,8 @@ Without HTTP serving, those fetches will fail or behave inconsistently depending
 
 1. `index.html` loads `styles.css` and `src/main.js`.
 2. `src/main.js` selects the canvas and modal DOM nodes.
-3. `src/main.js` calls `loadHomepageMap()` from `src/map/index.js`.
-4. The loader fetches the TMX file, the external TSX tileset, and the tilesheet image.
+3. `src/main.js` resolves the active map from the URL query string and calls `loadMap()` from `src/map/index.js`.
+4. The loader fetches the selected TMX file, the external TSX tileset, and the tilesheet image.
 5. The map parser normalizes layers, objects, and optional spawn metadata.
 6. `src/main.js` creates `HomepageGame` with the parsed map and hotspot interaction callbacks.
 7. `HomepageGame.init()` loads the player spritesheet, sizes the canvas, binds events, and starts the animation loop.
@@ -119,7 +120,7 @@ Without HTTP serving, those fetches will fail or behave inconsistently depending
 
 - `src/main.js`: app bootstrap, hotspot action routing, and modal wiring
 - `src/game/index.js`: core gameplay loop, input handling, movement, collisions, interaction triggering, and render orchestration
-- `src/map/index.js`: TMX and TSX loading plus normalized map assembly
+- `src/map/index.js`: whitelisted map selection, TMX and TSX loading, and normalized map assembly
 - `src/map/parser.js`: XML parsing helpers for layers, properties, objects, and spawn data
 - `src/game/renderer.js`: tile, object, player, and hotspot overlay rendering
 - `src/ui/modal.js`: modal open, close, and content rendering behavior
@@ -285,9 +286,9 @@ The current render split is positional rather than name-based:
 The render order is:
 
 1. Background tile layers
-2. Tile-backed TMX objects
-3. Player sprite
-4. Foreground tile layers
+2. Player sprite
+3. Foreground tile layers
+4. Tile-backed TMX objects
 5. Optional hotspot debug overlays
 
 This means the layering behavior depends on the order of layers in the TMX file.
@@ -368,6 +369,13 @@ When the player overlaps a hotspot and presses an interact key, `src/main.js` re
 
 That first rule is important: the current `contact` hotspot does not open the modal copy defined in `src/content.js`; it immediately opens Google in a new tab.
 
+Current routed map transitions use query-string navigation:
+
+- `?map=hidden_room`
+- `?map=homepage`
+
+The runtime only accepts a small whitelisted set of map IDs rather than loading arbitrary files from the URL.
+
 ### Modal Behavior
 
 The modal can be closed by:
@@ -408,18 +416,19 @@ Current runtime note: this record exists, but the `contact` hotspot does not use
 
 ## Current Authored Map State
 
-The current TMX file is `assets/maps/homepage.tmx`.
+The project currently ships with two TMX maps:
 
-### Map Dimensions
+- `assets/maps/homepage.tmx`
+- `assets/maps/hidden_room.tmx`
+
+### Homepage Map
 
 - Width: `32` tiles
 - Height: `16` tiles
 - Tile size: `16x16`
 - Pixel size: `512x256`
 
-### Tileset
-
-The map references `assets/maps/tilesheet.tsx`, which currently declares:
+The homepage map references `assets/maps/tilesheet.tsx`, which currently declares:
 
 - `tilewidth="16"`
 - `tileheight="16"`
@@ -427,9 +436,7 @@ The map references `assets/maps/tilesheet.tsx`, which currently declares:
 - `columns="11"`
 - Image source: `../tilesheet.png`
 
-### Layers
-
-The current TMX contains these tile layers:
+The homepage TMX contains these tile layers:
 
 - `Camada de Blocos 1`
 - `Camada de Blocos 2`
@@ -440,14 +447,12 @@ The current TMX contains these tile layers:
 
 The first five are rendered. The `collisions` layer is excluded from visual rendering and used only for blocking logic.
 
-### Object Layer
-
-The map currently has one object group: `Camada de Objetos 1`.
+The homepage map currently has one object group: `Camada de Objetos 1`.
 
 That object group contains:
 
 - Decorative renderable TMX tile objects
-- Three hotspot objects
+- Four hotspot objects
 - One spawn object
 
 ### Current Hotspots
@@ -473,14 +478,52 @@ That object group contains:
    - Prompt: `Contact`
    - Tile anchor: `(18, 5)`
 
+4. `Hidden Room`
+   - Type: `hotspot`
+   - `interactionType`: `route`
+   - Route: `?map=hidden_room`
+   - Prompt: `Descend`
+   - Tile anchor: `(31, 15)`
+
 ### Current Spawn
 
-The map currently defines one spawn object:
+The homepage map currently defines one spawn object:
 
 - Name: `Player Spawn`
 - Type: `spawn`
 - Raw TMX position: `x=16`, `y=48`, `width=16`, `height=16`
 - Normalized spawn tile: `(1, 2)`
+- Direction: `down`
+
+### Hidden Room Map
+
+- Width: `16` tiles
+- Height: `8` tiles
+- Tile size: `16x16`
+- Pixel size: `256x128`
+- Tileset source: `assets/maps/tilesheet.tsx`
+- Collision layer: hidden `collisions` layer
+
+The hidden room currently contains:
+
+- Decorative TMX tile objects
+- One route hotspot on the bottom-right stairs
+- One explicit spawn object
+
+Current hidden room hotspot:
+
+1. `Return`
+   - Type: `hotspot`
+   - `interactionType`: `route`
+   - Route: `?map=homepage`
+   - Prompt: `Return`
+   - Tile anchor: `(15, 7)`
+
+Current hidden room spawn:
+
+- Name: `Hidden Room Spawn`
+- Type: `spawn`
+- Normalized spawn tile: `(14, 6)`
 - Direction: `down`
 
 ## Utility Modules
@@ -537,7 +580,7 @@ The project works, but several areas are still intentionally rough or placeholde
 5. Layer splitting for foreground/background depends on layer order rather than explicit naming or metadata.
 6. Hotspot interaction requires overlap; there is no contextual on-map prompt such as "Press E".
 7. Content still lives in JavaScript rather than a more scalable structured content system.
-8. There is no persistence, scene switching system, or route-aware map management beyond single-route hotspot support.
+8. Scene switching currently works only through full-page query-string navigation between a small whitelist of maps; there is no in-memory scene manager or shared transition state.
 
 ### Things That Are Already Solid Enough To Build On
 

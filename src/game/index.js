@@ -34,8 +34,8 @@ export class HomepageGame {
     this.onHotspotInteract = onHotspotInteract;
     this.isModalOpen = isModalOpen;
     this.hotspots = map.objects.filter((object) => object.type === 'hotspot');
-    const spawnTileX = map.playerSpawn?.tileX ?? 8;
-    const spawnTileY = map.playerSpawn?.tileY ?? 10;
+    const spawnTileX = clamp(map.playerSpawn?.tileX ?? 8, 0, map.width - 1);
+    const spawnTileY = clamp(map.playerSpawn?.tileY ?? 10, 0, map.height - 1);
     const spawnDirection = map.playerSpawn?.direction ?? 'down';
     this.player = {
       tileX: spawnTileX,
@@ -266,12 +266,13 @@ export class HomepageGame {
       renderTileLayer(this.context, layer, this.map);
     }
 
-    renderRenderableObjects(this.context, this.renderableObjects, this.map);
     renderPlayerSprite(this.context, this.playerSpriteSheet, this.player, this.animationFrame, SPRITE_ROWS);
 
     for (const layer of this.foregroundLayers) {
       renderTileLayer(this.context, layer, this.map);
     }
+
+    renderRenderableObjects(this.context, this.renderableObjects, this.map);
 
     if (SHOW_HOTSPOT_HINTS) {
       renderHotspotHints(this.context, this.hotspots, this.map, (hotspot) => this.getInteractionBounds(hotspot));

@@ -1,5 +1,5 @@
 import { HomepageGame } from './game/index.js';
-import { loadHomepageMap } from './map/index.js';
+import { isSupportedMapId, loadMap } from './map/index.js';
 import { HOMEPAGE_CONTENT } from './content.js';
 import { ModalController } from './ui/modal.js';
 
@@ -43,6 +43,11 @@ function openTextModal({ prompt, text }) {
   modalController.openText({ prompt, text });
 }
 
+function resolveInitialMapId() {
+  const requestedMapId = new URLSearchParams(window.location.search).get('map');
+  return isSupportedMapId(requestedMapId) ? requestedMapId : 'homepage';
+}
+
 function handleHotspotInteraction(payload) {
   if (payload.contentId === 'contact') {
     window.open('https://www.google.com', '_blank', 'noopener,noreferrer');
@@ -66,7 +71,7 @@ modalController.bindCloseInteractions();
 
 async function bootstrap() {
   try {
-    const map = await loadHomepageMap();
+    const map = await loadMap(resolveInitialMapId());
     game = new HomepageGame({
       canvas,
       map,

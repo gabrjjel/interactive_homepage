@@ -1,6 +1,8 @@
 # Pixel Home
 
-Pixel Home is a small interactive homepage prototype built like a top-down pixel-art room. Instead of a static landing page, the site loads a Tiled-authored map, renders it to a canvas, and lets the visitor walk around to trigger in-world hotspots.
+Pixel Home is a small interactive homepage prototype built like a top-down pixel-art room. Instead of a static landing page, the site loads Tiled-authored maps, renders them to a canvas, and lets the visitor walk around to trigger in-world hotspots.
+
+The current build includes a secondary hidden room that can be reached through the stairs on the bottom-right tile of the homepage.
 
 ## Features
 
@@ -84,11 +86,13 @@ http://127.0.0.1:8000
 
 ## Current Map Behavior
 
-- Map size: 32 x 16 tiles
+- Primary map: `homepage.tmx` at 32 x 16 tiles
+- Secondary map: `hidden_room.tmx` at 16 x 8 tiles
 - Tile size: 16 x 16 pixels
-- Collision source: hidden `collisions` layer in the TMX map
+- Collision source: hidden `collisions` layer when present
 - Spawn source: TMX object with `type="spawn"`
-- Hotspots: `About`, `Projects`, and `Contact`
+- Homepage hotspots: `About`, `Projects`, `Contact`, and the bottom-right stairs to the hidden room
+- Hidden room exit: bottom-right stairs route back to the homepage
 
 ## Development Notes
 
