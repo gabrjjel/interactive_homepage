@@ -1,0 +1,1 @@
+export { HomepageGame } from './game/index.js';

@@ -1,0 +1,130 @@
+:root {
+  --bg: #12261f;
+  --panel: #d7f4bf;
+  --panel-ink: #0b1d17;
+  --panel-accent: #1b3f34;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.map-shell {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-shell__error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: #d7f4bf;
+  font-family: monospace;
+  text-align: center;
+  padding: 2rem;
+}
+
+#game {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: transparent;
+}
+
+.hotspot-modal {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.hotspot-modal.is-open {
+  display: flex;
+}
+
+.hotspot-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(7 18 14 / 72%);
+}
+
+.hotspot-modal__dialog {
+  position: relative;
+  width: min(92vw, 520px);
+  max-height: min(85vh, 540px);
+  overflow: auto;
+  background: var(--panel);
+  color: var(--panel-ink);
+  border: 3px solid var(--panel-accent);
+  box-shadow: 0 10px 0 rgb(6 15 12 / 35%);
+  padding: 1rem 1rem 0.9rem;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.hotspot-modal__close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  border: 1px solid var(--panel-accent);
+  background: #f2ffd8;
+  color: var(--panel-ink);
+  padding: 0.15rem 0.45rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.hotspot-modal__kicker {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: #2d5f50;
+}
+
+.hotspot-modal__title {
+  margin: 0 0 0.7rem;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.hotspot-modal__body p {
+  margin: 0 0 0.7rem;
+  line-height: 1.45;
+}
+
+.hotspot-modal__bullets {
+  margin: 0.2rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.hotspot-modal__bullets li {
+  margin-bottom: 0.35rem;
+  line-height: 1.35;
+}

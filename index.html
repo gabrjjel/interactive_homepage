@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel Home</title>
+    <meta
+      name="description"
+      content="A playable homepage built from a handcrafted Tiled map, with keyboard exploration and in-world content hotspots."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="map-shell" aria-label="Interactive homepage map">
+      <canvas id="game" width="512" height="256" aria-label="Homepage map"></canvas>
+
+      <section id="hotspot-modal" class="hotspot-modal" aria-hidden="true">
+        <div id="hotspot-backdrop" class="hotspot-modal__backdrop"></div>
+        <article class="hotspot-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="hotspot-title">
+          <button id="hotspot-close" class="hotspot-modal__close" type="button" aria-label="Close interaction">
+            Close
+          </button>
+          <p id="hotspot-kicker" class="hotspot-modal__kicker"></p>
+          <h2 id="hotspot-title" class="hotspot-modal__title"></h2>
+          <div id="hotspot-body" class="hotspot-modal__body"></div>
+          <ul id="hotspot-bullets" class="hotspot-modal__bullets"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
